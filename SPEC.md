@@ -48,6 +48,7 @@ document are to be interpreted as described in [BCP 14][] ([RFC 2119][],
 [RFC 4648]: https://www.rfc-editor.org/rfc/rfc4648.html
 [RFC 5234]: https://www.rfc-editor.org/rfc/rfc5234.html
 [BLAKE3]: https://c2sp.org/BLAKE3
+[MiniSHAKE]: https://eprint.iacr.org/2026/2363
 
 ### 2.1. Canonical Unpadded Lowercase Base32
 
@@ -170,12 +171,24 @@ coordination, provided:
 1. The name conforms to the `alg` ABNF (`[a-z][a-z0-9]*(-[a-z0-9]+)*`).
 2. The name unambiguously identifies a single algorithm, mode, and fixed output
    length. Distinct algorithms or output lengths require distinct names (for
-   example, `sha512` for 512-bit SHA-2, or `sha3-256` and `sha3-512` for SHA-3).
+   example, `sha512` for 512-bit SHA-2, `sha3-256` and `sha3-512` for SHA-3, or
+   `minishake128` for a fixed-length 256-bit output of MiniSHAKE128
+   ([MiniSHAKE][])).
 3. To avoid collisions between independent adopters, well-known standardized
    algorithms SHOULD use their common lowercase name (including bit-length when
-   the family has variants, e.g., `sha3-256`, `sha512`, `blake2b-256`), and
-   experimental or organization-specific algorithms SHOULD use an owner prefix
-   such as `x-<owner>-<name>` (e.g., `x-acme-myhash`).
+   the family has variants, e.g., `minishake128`, `sha3-256`, `sha512`,
+   `blake2b-256`), and experimental or organization-specific algorithms SHOULD
+   use an owner prefix such as `x-<owner>-<name>` (e.g., `x-acme-myhash`).
+
+For example, a future writer emitting `blake3`, `minishake128`, and `sha256`
+together places `minishake128` between `blake3` and `sha256` in ASCII order
+(`"blake3" < "minishake128" < "sha256"`):
+
+    blake3-<52 base32 chars>.minishake128-<base32 chars>.sha256-<52 base32 chars>
+
+Older `blake3`/`sha256` readers (R1–R4) validate the `minishake128` entry
+syntactically and skip it, while newer readers (R5–R7) can require, prefer, or
+co-verify `minishake128`.
 
 Readers MUST NOT reject a Hashset solely because it contains an unrecognized
 `alg` name, provided the unknown entry is syntactically valid per Section 3.1

@@ -15,6 +15,9 @@ blake3-v4jutopv7gq2nicajxvdnxgjjgn4wjojvxarfn6mtkj4vza7gjra.sha256-4oymiquy7qobj
 
 # Forward-compatible with future algorithms (e.g., SHA3-256)
 blake3-v4jutopv7gq2nicajxvdnxgjjgn4wjojvxarfn6mtkj4vza7gjra.sha256-4oymiquy7qobjgx36tejs35zeqt24qpemsnzgtfeswmrw6csxbkq.sha3-256-u774n6f7d3lwmuobi5lkayowml2yb72n4q5ut6uc3afexahyinfa
+
+# Permissionless new algorithms sort naturally in ASCII order (e.g., MiniSHAKE128: https://eprint.iacr.org/2026/2363)
+blake3-<52 base32 chars>.minishake128-<base32 chars>.sha256-<52 base32 chars>
 ```
 
 ## Key Properties
@@ -28,21 +31,21 @@ blake3-v4jutopv7gq2nicajxvdnxgjjgn4wjojvxarfn6mtkj4vza7gjra.sha256-4oymiquy7qobj
   (strict ascending ASCII order by algorithm name, no duplicates, no whitespace,
   no padding, strict zero trailing Base32 bits per RFC 4648 §3.5).
 - **Permissionless extensibility:** Variable-length algorithm names (`blake3`,
-  `sha256`, `sha3-256`, `sha512`, `x-<org>-<alg>`, …) with no central numeric
-  registry and no fixed digest length in the parser.
+  `minishake128`, `sha256`, `sha3-256`, `sha512`, `x-<org>-<alg>`, …) with no
+  central numeric registry and no fixed digest length in the parser.
 - **Flexible, fail-closed reader policies:** Supports single-algorithm readers
   (R1, R2, R5), priority-fallback readers (R3, R6), and verify-all-supported
   readers (R4, R7 — failing if *any* checked digest mismatches).
 
 ## Repository Contents
 
+- [`SMUGGLING.md`](SMUGGLING.md) — **Smuggling Extensible Hashes into Existing
+  Software**: how users can carry Hashsets inside Zig, Cargo, Nix, Git, URLs,
+  SemVer, and filenames today without waiting for upstream maintainer changes.
 - [`SPEC.md`](SPEC.md) — Normative English specification (C2SP style) with valid
   and invalid test vectors.
 - [`Hashset.lean`](Hashset.lean) — Self-contained executable formal
   specification and verification properties in Lean 4.
-- [`INTEGRATION.md`](INTEGRATION.md) — Practical guide to embedding Hashsets in
-  existing tools (Zig, Cargo, Nix, Git, URLs, SemVer) without waiting for
-  upstream maintainer changes.
 - [`reference/hashset.py`](reference/hashset.py) — Zero-dependency Python 3
   reference implementation.
 - [`reference/test_hashset.py`](reference/test_hashset.py) — Test suite covering

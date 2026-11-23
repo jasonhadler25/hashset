@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Run Python reference test suite
+        run: python3 -m unittest discover -s reference -v
+
+      - name: Run Python reference test suite under -O (asserts stripped)
+        run: python3 -O -m unittest discover -s reference -v
